@@ -1,16 +1,17 @@
-#!/usr/bin/python3
+from models.user import User
+from models.state import State
+from models.review import Review
+from models.place import Place
+from models.city import City
+from models.base_model import BaseModel
+from models.amenity import Amenity
+import json
+
+e!/ usr / bin / python3
 """
 Contains the FileStorage class
 """
 
-import json
-from models.amenity import Amenity
-from models.base_model import BaseModel
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
-from models.user import User
 
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -55,7 +56,7 @@ class FileStorage:
                 jo = json.load(f)
             for key in jo:
                 self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
-        except:
+        except BaseException:
             pass
 
     def delete(self, obj=None):
@@ -66,20 +67,27 @@ class FileStorage:
                 del self.__objects[key]
 
     def close(self):
-        """call reload() method for deserializing the JSON file to objects"""
+        """call reload() method for deserializing
+        the JSON file to objects
+        """
         self.reload()
 
     def get(self, cls, id):
-        """Retrieves one object from the FileStorage based on its class and id"""
+        """Retrieves one object from the
+        FileStorage based on its class and id
+        """
         key = cls.__name__ + "." + id
         if key in self.__objects:
             return self.__objects[key]
         return None
 
     def count(self, cls=None):
-        """Retrieves the number of objects in the FileStorage matching the given class"""
+        """Retrieves the number of objects in the
+        FileStorage matching the given class
+        """
         if cls:
-            count = len([obj for obj in self.__objects.values() if obj.__class__.__name__ == cls.__name__])
+            count = len([obj for obj in self.__objects.values()
+                        if obj.__class__.__name__ == cls.__name__])
         else:
             count = len(self.__objects)
         return count
